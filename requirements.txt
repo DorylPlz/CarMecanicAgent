@@ -12,10 +12,8 @@ faiss-cpu>=1.7.4
 sentence-transformers>=2.2.2
 numpy>=1.24.0
 
-# Internet Search
-requests>=2.31.0
-beautifulsoup4>=4.12.0
-google-search-results>=2.4.2
+# Internet Search - Now using Gemini's integrated Google Search
+# No external search API dependencies needed
 
 # Utilities
 python-dotenv>=1.0.0

@@ -106,11 +106,8 @@ class Config:
     TOP_K_RESULTS: int = int(os.getenv("TOP_K_RESULTS", "10"))  # Number of results to return
     SIMILARITY_THRESHOLD: float = float(os.getenv("SIMILARITY_THRESHOLD", "0.5"))  # Minimum similarity threshold
     
-    # Internet search configuration (configurable via .env)
-    SEARCH_API: str = os.getenv("SEARCH_API", "serper")  # Options: "serper", "bing", "google"
-    SERPER_API_KEY: Optional[str] = os.getenv("SERPER_API_KEY", "")
-    BING_API_KEY: Optional[str] = os.getenv("BING_API_KEY", "")
-    GOOGLE_SEARCH_ENGINE_ID: Optional[str] = os.getenv("GOOGLE_SEARCH_ENGINE_ID", "")
+    # Internet search now uses Gemini's integrated Google Search
+    # No external API keys needed - only GOOGLE_API_KEY is required
     
     @classmethod
     def set_vehicle(cls, model: str, year: int, vin: str, manual_pdf_path: Optional[str] = None):

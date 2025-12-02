@@ -200,12 +200,10 @@ main.py::main()
                       │
                       └─> internet_searcher.search(query) [internet_search.py]
                           │
-                          ├─> Based on SEARCH_API configured:
-                          │   ├─> search_serper() → Serper API
-                          │   ├─> search_bing() → Bing API
-                          │   └─> search_google_custom() → Google Custom Search
-                          │
-                          └─> format_results() → Formats results
+                          └─> Uses Gemini's integrated Google Search
+                              │   (No external API keys needed)
+                              │
+                              └─> Returns formatted results with sources
 ```
 
 #### Phase 3: Final Response Generation

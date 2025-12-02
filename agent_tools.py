@@ -128,16 +128,22 @@ def search_manual(query: str) -> str:
 
 def search_internet(query: str) -> str:
     """
-    Searches for information on the internet when sufficient information is not found
-    in the service manual. Use this tool ONLY as a fallback after having tried
-    searching the manual. Useful for general information, recent updates or problems
-    not documented in the manual.
+    Searches for information on the internet using Gemini's integrated Google Search.
+    Use this tool ONLY as a fallback after having tried searching the manual.
+    Useful for general information, recent updates or problems not documented in the manual.
+    
+    This uses Gemini's native search capabilities - no external API keys needed.
+    Only requires GOOGLE_API_KEY which is already configured for the agent.
+    
+    IMPORTANT: When this tool is used, the agent MUST:
+    1. Clearly indicate that internet search was performed
+    2. Include all sources at the end of the response
     
     Args:
         query: Query about the mechanical problem to search on the internet
         
     Returns:
-        Formatted response with internet results
+        Formatted response with internet results and sources
     """
     if internet_searcher is None:
         return "Error: Internet searcher is not initialized."
@@ -147,12 +153,10 @@ def search_internet(query: str) -> str:
         vehicle_info = Config.get_vehicle_info()
         enhanced_query = f"{query} {vehicle_info}"
         
+        # The search() method returns formatted results with sources
         results = internet_searcher.search(enhanced_query, num_results=5)
         
-        if not results:
-            return "No results found on the internet."
-        
-        return internet_searcher.format_results(results)
+        return results
         
     except Exception as e:
         return f"Error searching internet: {str(e)}"

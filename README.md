@@ -47,10 +47,8 @@ VEHICLE_VIN=JF1VAGL63JG014384
 # Optional: Manual PDF path (defaults to service_manual.pdf)
 VEHICLE_MANUAL_PDF_PATH=service_manual.pdf
 
-# Optional: Internet Search APIs (if you want to use internet search)
-# SERPER_API_KEY=your_serper_api_key
-# BING_API_KEY=your_bing_api_key
-# GOOGLE_SEARCH_ENGINE_ID=your_google_search_engine_id
+# Internet search uses Gemini's integrated Google Search
+# No additional API keys needed - only GOOGLE_API_KEY is required
 ```
 
 **Available LLM Models:**
@@ -211,8 +209,8 @@ CarMecanicAgent/
 
 2. **Internet Search** (fallback):
    - Only if there's no information in the manual
-   - Uses configured API (Serper/Bing/Google)
-   - Returns cited results
+   - Uses Gemini's integrated Google Search (no external API keys needed)
+   - Returns cited results with sources
 
 ### 3. Agent Response
 
