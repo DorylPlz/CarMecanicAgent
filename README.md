@@ -41,9 +41,9 @@ GOOGLE_API_KEY=your_api_key_here
 LLM_MODEL=gemini-2.5-flash
 
 # Vehicle Configuration (Required)
-VEHICLE_MODEL=Subaru WRX
-VEHICLE_YEAR=2018
-VEHICLE_VIN=JF1VAGL63JG014384
+VEHICLE_MODEL=Your Vehicle Model
+VEHICLE_YEAR=2020
+VEHICLE_VIN=YourVINNumber
 
 # Optional: Manual PDF path (defaults to service_manual.pdf)
 VEHICLE_MANUAL_PDF_PATH=service_manual.pdf
@@ -291,7 +291,7 @@ If your vehicle has a "Catless downpipe" installed and you ask about exhaust iss
 When you start the agent, configured modifications are displayed:
 
 ```
-✅ Vehicle: Subaru WRX 2018, VIN: JF1VAGL63JG014384
+✅ Vehicle: Honda Civic 2021, VIN: 19XFC2F59ME123456
 🔧 Aftermarket modifications configured: 3 modification(s)
    • Intake injen
    • GoFastBits BHV

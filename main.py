@@ -48,11 +48,13 @@ def main():
     vehicle = Config.load_vehicle_from_env()
     
     if vehicle is None:
-        print("⚠️ Warning: Vehicle variables not found in .env")
-        print("   Add the following variables to your .env file:")
-        print("   VEHICLE_MODEL=Subaru WRX")
-        print("   VEHICLE_YEAR=2018")
-        print("   VEHICLE_VIN=JF1VAGL63JG014384")
+        print("❌ Error: Vehicle configuration not found in .env file")
+        print()
+        print("   Please configure your vehicle by adding the following variables to your .env file:")
+        print()
+        print("   VEHICLE_MODEL=Your Vehicle Model")
+        print("   VEHICLE_YEAR=2020")
+        print("   VEHICLE_VIN=YourVINNumber")
         print("   (Optional) VEHICLE_MANUAL_PDF_PATH=service_manual.pdf")
         sys.exit(1)
     
