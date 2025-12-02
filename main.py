@@ -56,7 +56,16 @@ def main():
         print("   (Optional) VEHICLE_MANUAL_PDF_PATH=service_manual.pdf")
         sys.exit(1)
     
-    print(f"✅ {Config.get_vehicle_info()}\n")
+    print(f"✅ {Config.get_vehicle_info()}")
+    
+    # Load aftermarket modifications from .env (optional)
+    Config.load_aftermarket_mods_from_env()
+    aftermarket_mods = Config.get_aftermarket_modifications()
+    if aftermarket_mods:
+        print(f"🔧 Aftermarket modifications configured: {len(aftermarket_mods)} modification(s)")
+        for mod in aftermarket_mods:
+            print(f"   • {mod}")
+    print()
     
     # Verify PDF exists
     if not Config.MANUAL_PDF_PATH.exists():

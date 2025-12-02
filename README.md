@@ -11,6 +11,7 @@ Intelligent mechanical diagnostic system that uses Google ADK (Agent Development
 - ✅ **Structured Responses**: Includes page, summary, diagnosis, solution and warnings
 - ✅ **Vehicle Agnostic**: Configurable for any vehicle
 - ✅ **Multilingual Support**: Responds in the same language as the user's query
+- ✅ **Aftermarket Modifications**: Optional configuration for aftermarket parts and modifications
 
 ## 🛠️ Technologies
 
@@ -46,6 +47,14 @@ VEHICLE_VIN=JF1VAGL63JG014384
 
 # Optional: Manual PDF path (defaults to service_manual.pdf)
 VEHICLE_MANUAL_PDF_PATH=service_manual.pdf
+
+# Optional: Aftermarket modifications (comma-separated or newline-separated)
+# Examples:
+# VEHICLE_AFTERMARKET_MODS=Intake injen,GoFastBits BHV,Catless downpipe
+# Or using newlines:
+# VEHICLE_AFTERMARKET_MODS="Intake injen
+# GoFastBits BHV
+# Catless downpipe"
 
 # Internet search uses Gemini's integrated Google Search
 # No additional API keys needed - only GOOGLE_API_KEY is required
@@ -223,6 +232,71 @@ The agent structures the response with:
 - ⚠️ Safety warnings
 
 The agent responds in the same language as the user's query.
+
+## 🔧 Aftermarket Modifications
+
+You can configure aftermarket modifications installed on your vehicle to help the agent provide more accurate diagnoses and recommendations.
+
+### Configuration Methods
+
+#### Method 1: Using `.env` file (Recommended)
+
+Add the `VEHICLE_AFTERMARKET_MODS` variable to your `.env` file:
+
+**Option A: Comma-separated list:**
+```env
+VEHICLE_AFTERMARKET_MODS=Intake injen,GoFastBits BHV,Catless downpipe
+```
+
+**Option B: Newline-separated list (for readability):**
+```env
+VEHICLE_AFTERMARKET_MODS="Intake injen
+GoFastBits BHV
+Catless downpipe"
+```
+
+#### Method 2: Using Python code
+
+You can also configure modifications programmatically:
+
+```python
+from config import Config
+
+# Set all modifications at once
+Config.set_aftermarket_modifications([
+    "Intake injen",
+    "GoFastBits BHV",
+    "Catless downpipe"
+])
+
+# Or add them one by one
+Config.add_aftermarket_modification("Intake injen")
+Config.add_aftermarket_modification("GoFastBits BHV")
+Config.add_aftermarket_modification("Catless downpipe")
+```
+
+### How It Works
+
+When aftermarket modifications are configured:
+- The agent is aware of all modifications installed on the vehicle
+- The agent considers these modifications when diagnosing problems
+- The agent may adapt procedures from the manual based on modifications
+- The agent can provide specific advice related to aftermarket parts
+
+**Example:**
+If your vehicle has a "Catless downpipe" installed and you ask about exhaust issues, the agent will consider this modification in its diagnosis.
+
+### Viewing Configured Modifications
+
+When you start the agent, configured modifications are displayed:
+
+```
+✅ Vehicle: Subaru WRX 2018, VIN: JF1VAGL63JG014384
+🔧 Aftermarket modifications configured: 3 modification(s)
+   • Intake injen
+   • GoFastBits BHV
+   • Catless downpipe
+```
 
 ## 🐛 Troubleshooting
 

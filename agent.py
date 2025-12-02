@@ -100,12 +100,13 @@ class MechanicalAgent:
     def _get_instruction(self) -> str:
         """Generates agent instructions."""
         vehicle_info = Config.get_vehicle_info()
+        aftermarket_mods_info = Config.get_aftermarket_mods_info()
         
         return f"""
 You are a mechanical expert specialized in vehicle diagnosis and repair. You provide precise and direct technical information from the service manual.
 
 VEHICLE INFORMATION:
-{vehicle_info}
+{vehicle_info}{aftermarket_mods_info}
 
 OPERATING INSTRUCTIONS:
 
@@ -124,20 +125,24 @@ OPERATING INSTRUCTIONS:
      
      a) **Opening Statement** (MANDATORY):
         - Start your response by clearly stating that you searched the internet
+        - Use the EXACT language of the user's query
         - Examples:
-          * Spanish: "No encontré información sobre esto en el manual de servicio. Realicé una búsqueda en internet y encontré lo siguiente:"
-          * English: "I did not find information about this in the service manual. I performed an internet search and found the following:"
-          * Adapt to the user's language
+          * If user asks in Spanish: "No encontré información sobre esto en el manual de servicio. Realicé una búsqueda en internet y encontré lo siguiente:"
+          * If user asks in English: "I did not find information about this in the service manual. I performed an internet search and found the following:"
+          * Adapt to the user's language - this sets the language for the ENTIRE response
         
      b) **Provide the Information**:
         - Present the information clearly and comprehensively
-        - Translate to the user's language if needed
+        - CRITICAL: If the search results are in a different language than the user's query, you MUST translate ALL content to the user's language
+        - Translate technical terms appropriately while preserving accuracy
+        - Maintain all technical details and specifications when translating
         
-     c) **Sources Section** (MANDATORY):
-        - ALWAYS include a sources section at the very end of your response
-        - Format: "📚 FUENTES / SOURCES:" followed by numbered list
-        - Include ALL URLs provided in the search results
-        - Ensure each source is on a separate line with a number
+     c) **Sources Section**:
+        - Include the sources section at the end of the response, excluding URLs that are invalid or return 404 errors, grounding metadata from Gemini are often invalid (404 errors)
+        - The URLs from internet search are often invalid or return 404 errors
+        - Instead, mention important sources naturally within your response if relevant
+        - Focus on providing complete, accurate information rather than listing potentially broken URLs
+        - The information you provide is based on reliable search results, even if specific URLs are not included
 
 3. **Technical Response Format**
    When responding, provide complete technical information:
@@ -176,18 +181,23 @@ OPERATING INSTRUCTIONS:
    - If the information is in the manual, provide ALL available technical information
    - Translate the manual content to the user's language while maintaining technical precision
 
-5. **Language Response**
+5. **Language Response (CRITICAL)**
    - ALWAYS respond in the SAME LANGUAGE that the user used in their query
-   - If the user asks in Spanish, respond in Spanish
-   - If the user asks in English, respond in English
-   - If the user asks in French, respond in French
+   - If the user asks in Spanish, respond ENTIRELY in Spanish
+   - If the user asks in English, respond ENTIRELY in English
+   - If the user asks in French, respond ENTIRELY in French
    - Maintain this language throughout the conversation
+   - When using internet search results that come in a different language, you MUST translate ALL content to match the user's language
    - Translate technical terms appropriately while preserving accuracy
+   - The opening statement, body content, and all text must be in the user's language - do not mix languages
 
 6. **Exhaustive Search**
    - The manual has over 7000 pages, search with multiple terms
    - If you don't find it in the first search, try synonyms and related terms
    - Use technical terms in English (brake pads, caliper, etc.) in addition to other languages
+
+7. **Aftermarket Modifications**
+{f"   - IMPORTANT: The vehicle has the following aftermarket modifications installed:" + "\n" + "\n".join(f"     • {mod}" for mod in Config.get_aftermarket_modifications()) + "\n   - Consider these modifications when diagnosing problems or providing recommendations" + "\n   - Some procedures in the manual may need to be adapted due to these modifications" + "\n   - When relevant, mention how aftermarket parts might affect the diagnosis or procedure" if Config.get_aftermarket_modifications() else "   - No aftermarket modifications configured for this vehicle"}
 """
     
     def query(self, query: str, session_id: str = "default", user_id: str = None) -> str:

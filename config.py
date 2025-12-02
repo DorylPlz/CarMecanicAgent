@@ -4,7 +4,7 @@ Defines vehicle data and file paths.
 """
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
@@ -109,6 +109,57 @@ class Config:
     # Internet search now uses Gemini's integrated Google Search
     # No external API keys needed - only GOOGLE_API_KEY is required
     
+    # Aftermarket modifications (optional)
+    # List of aftermarket modifications installed on the vehicle
+    # Can be loaded from .env as VEHICLE_AFTERMARKET_MODS (comma-separated or newline-separated)
+    aftermarket_modifications: List[str] = []
+    
+    @classmethod
+    def load_aftermarket_mods_from_env(cls):
+        """Loads aftermarket modifications from environment variable."""
+        mods_str = os.getenv("VEHICLE_AFTERMARKET_MODS", "").strip()
+        if not mods_str:
+            cls.aftermarket_modifications = []
+            return []
+        
+        # Support both comma-separated and newline-separated formats
+        if "\n" in mods_str:
+            mods = [mod.strip() for mod in mods_str.split("\n") if mod.strip()]
+        else:
+            mods = [mod.strip() for mod in mods_str.split(",") if mod.strip()]
+        
+        cls.aftermarket_modifications = mods
+        return mods
+    
+    @classmethod
+    def set_aftermarket_modifications(cls, modifications: List[str]):
+        """
+        Sets the list of aftermarket modifications.
+        
+        Args:
+            modifications: List of modification names/descriptions
+        """
+        cls.aftermarket_modifications = [mod.strip() for mod in modifications if mod.strip()]
+        return cls.aftermarket_modifications
+    
+    @classmethod
+    def add_aftermarket_modification(cls, modification: str):
+        """
+        Adds a single aftermarket modification.
+        
+        Args:
+            modification: Modification name/description
+        """
+        mod = modification.strip()
+        if mod and mod not in cls.aftermarket_modifications:
+            cls.aftermarket_modifications.append(mod)
+        return cls.aftermarket_modifications
+    
+    @classmethod
+    def get_aftermarket_modifications(cls) -> List[str]:
+        """Returns the list of aftermarket modifications."""
+        return cls.aftermarket_modifications.copy()
+    
     @classmethod
     def set_vehicle(cls, model: str, year: int, vin: str, manual_pdf_path: Optional[str] = None):
         """Configures vehicle data."""
@@ -130,6 +181,18 @@ class Config:
         if cls.vehicle is None:
             return "Vehicle not configured"
         return f"Vehicle: {cls.vehicle.model} {cls.vehicle.year}, VIN: {cls.vehicle.vin}"
+    
+    @classmethod
+    def get_aftermarket_mods_info(cls) -> str:
+        """
+        Returns aftermarket modifications information as a formatted string.
+        Returns empty string if no modifications are configured.
+        """
+        if not cls.aftermarket_modifications:
+            return ""
+        
+        mods_list = "\n".join(f"  - {mod}" for mod in cls.aftermarket_modifications)
+        return f"\nAFTERMARKET MODIFICATIONS:\n{mods_list}"
 
 
 # Initialize paths on module load

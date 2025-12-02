@@ -137,10 +137,11 @@ def search_internet(query: str) -> str:
     
     IMPORTANT: When this tool is used, the agent MUST:
     1. Clearly indicate that internet search was performed
-    2. Include all sources at the end of the response
+    2. Translate ALL content to match the user's query language - if results are in English but user asked in Spanish, translate everything to Spanish
+    3. Do NOT include a separate sources section unless the URLs are valid and not broken (404 errors) - URLs from grounding metadata are often invalid (404 errors)
     
     Args:
-        query: Query about the mechanical problem to search on the internet
+        query: Query about the mechanical problem to search on the internet (language preserved)
         
     Returns:
         Formatted response with internet results and sources
@@ -154,6 +155,7 @@ def search_internet(query: str) -> str:
         enhanced_query = f"{query} {vehicle_info}"
         
         # The search() method returns formatted results with sources
+        # Note: Results may be in different language - agent must translate to user's language
         results = internet_searcher.search(enhanced_query, num_results=5)
         
         return results
