@@ -324,3 +324,59 @@ OPERATING INSTRUCTIONS:
                 break
             except Exception as e:
                 print(f"\n❌ Error: {str(e)}\n")
+
+
+def get_root_agent():
+    """
+    Creates and returns the root agent for ADK.
+    This function initializes the configuration and returns the ADK Agent instance.
+    
+    Returns:
+        Agent: The ADK Agent instance
+    
+    Raises:
+        ValueError: If configuration is missing (API key, vehicle info, etc.)
+    """
+    # Load configuration from .env
+    # Try to load from package directory first, then current directory
+    from dotenv import load_dotenv
+    from pathlib import Path
+    
+    package_dir = Path(__file__).parent
+    env_path = package_dir / ".env"
+    
+    # Load .env from package directory if it exists, otherwise try current directory
+    if env_path.exists():
+        load_dotenv(env_path)
+    else:
+        load_dotenv()  # Try current directory
+    
+    # Load vehicle configuration
+    if Config.vehicle is None:
+        vehicle = Config.load_vehicle_from_env()
+        if vehicle is None:
+            raise ValueError(
+                f"Vehicle configuration not found. "
+                f"Please set VEHICLE_MODEL, VEHICLE_YEAR, and VEHICLE_VIN in .env file. "
+                f"Looked for .env in: {env_path} and current directory."
+            )
+    
+    # Load aftermarket modifications
+    Config.load_aftermarket_mods_from_env()
+    
+    # Create MechanicalAgent instance
+    mechanical_agent = MechanicalAgent()
+    
+    # Return the ADK Agent instance (root_agent)
+    return mechanical_agent.agent
+
+
+# Expose root_agent for ADK
+root_agent = None
+
+def _initialize_root_agent():
+    """Lazy initialization of root_agent."""
+    global root_agent
+    if root_agent is None:
+        root_agent = get_root_agent()
+    return root_agent
